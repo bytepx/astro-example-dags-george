@@ -26,8 +26,8 @@ from airflow.utils.dates import datetime
 from airflow.utils.task_group import TaskGroup
 
 
-# SNOWFLAKE_FORESTFIRE_TABLE = "forestfires"
-# SNOWFLAKE_CONN_ID = "snowflake_default"
+SNOWFLAKE_FORESTFIRE_TABLE = "forestfires"
+SNOWFLAKE_CONN_ID = "snowflake_default"
 
 
 with DAG(
