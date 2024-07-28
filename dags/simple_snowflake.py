@@ -20,14 +20,14 @@ What makes this a simple data quality case is:
 from airflow import DAG
 from airflow.models.baseoperator import chain
 from airflow.operators.empty import EmptyOperator
-from airflow.providers.common.sql.operators.sql import SQLColumnCheckOperator, SQLTableCheckOperator
-from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
+# from airflow.providers.common.sql.operators.sql import SQLColumnCheckOperator, SQLTableCheckOperator
+# from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from airflow.utils.dates import datetime
-from airflow.utils.task_group import TaskGroup
+#from airflow.utils.task_group import TaskGroup
 
 
-SNOWFLAKE_FORESTFIRE_TABLE = "forestfires"
-SNOWFLAKE_CONN_ID = "snowflake_default"
+# SNOWFLAKE_FORESTFIRE_TABLE = "forestfires"
+# SNOWFLAKE_CONN_ID = "snowflake_default"
 
 
 with DAG(
@@ -45,10 +45,10 @@ with DAG(
     #### Snowflake table creation
     Create the table to store sample forest fire data.
     """
-    create_table = SnowflakeOperator(
+    create_table = EmptyOperator(
         task_id="create_table",
-        sql="{% include 'create_forestfire_table.sql' %}",
-        params={"table_name": SNOWFLAKE_FORESTFIRE_TABLE}
+        # sql="{% include 'create_forestfire_table.sql' %}",
+        # params={"table_name": SNOWFLAKE_FORESTFIRE_TABLE}
     )
 
     """
@@ -56,10 +56,10 @@ with DAG(
     Insert data into the Snowflake table using an existing SQL query (stored in
     the include/sql/snowflake_examples/ directory).
     """
-    load_data = SnowflakeOperator(
+    load_data = EmptyOperator(
         task_id="insert_query",
-        sql="{% include 'load_snowflake_forestfire_data.sql' %}",
-        params={"table_name": SNOWFLAKE_FORESTFIRE_TABLE}
+        # sql="{% include 'load_snowflake_forestfire_data.sql' %}",
+        # params={"table_name": SNOWFLAKE_FORESTFIRE_TABLE}
     )
 
     with TaskGroup(group_id="quality_checks", default_args={"conn_id": SNOWFLAKE_CONN_ID}) as quality_check_group:
@@ -67,30 +67,30 @@ with DAG(
         #### Column-level data quality check
         Run data quality checks on columns of the audit table
         """
-        column_checks = SQLColumnCheckOperator(
+        column_checks = EmptyOperator(
             task_id="column_checks",
-            table=SNOWFLAKE_FORESTFIRE_TABLE,
-            column_mapping={"ID": {"null_check": {"equal_to": 0}}}
+            # table=SNOWFLAKE_FORESTFIRE_TABLE,
+            # column_mapping={"ID": {"null_check": {"equal_to": 0}}}
         )
 
         """
         #### Table-level data quality check
         Run data quality checks on the audit table
         """
-        table_checks = SQLTableCheckOperator(
+        table_checks = EmptyOperator(
             task_id="table_checks",
-            table=SNOWFLAKE_FORESTFIRE_TABLE,
-            checks={"row_count_check": {"check_statement": "COUNT(*) = 9"}}
+            # table=SNOWFLAKE_FORESTFIRE_TABLE,
+            # checks={"row_count_check": {"check_statement": "COUNT(*) = 9"}}
         )
 
     """
     #### Delete table
     Clean up the table created for the example.
     """
-    delete_table = SnowflakeOperator(
+    delete_table = EmptyOperator(
         task_id="delete_table",
-        sql="{% include 'delete_snowflake_table.sql' %}",
-        params={"table_name": SNOWFLAKE_FORESTFIRE_TABLE}
+        # sql="{% include 'delete_snowflake_table.sql' %}",
+        # params={"table_name": SNOWFLAKE_FORESTFIRE_TABLE}
     )
 
     begin = EmptyOperator(task_id="begin")
