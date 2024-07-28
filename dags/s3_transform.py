@@ -1,9 +1,10 @@
-from airflow.providers.amazon.aws.operators.s3 import S3FileTransformOperator
+# from airflow.providers.amazon.aws.operators.s3 import S3FileTransformOperator
 from airflow import DAG
 from airflow.models.connection import Connection
 from time import time_ns
 from datetime import datetime
 import os
+from airflow.operators.empty import EmptyOperator
 
 conn = Connection(
     conn_id="aws_demo",
@@ -22,11 +23,11 @@ os.environ[env_key] = conn_uri
 with DAG(
     dag_id="s3", schedule="@once", start_date=datetime(2023, 1, 1), is_paused_upon_creation=False, catchup=False
 ) as dag:
-    S3FileTransformOperator(
+    EmptyOperator(
         task_id="s3transform",
-        source_s3_key="s3://datah/countries.csv",
-        source_aws_conn_id=conn.conn_id,
-        transform_script="/usr/local/airflow/transform_script.sh", # select_expression doesn't work with anonymous S3 access, so have to use transform_script instead. this script was injected by the Dockerfile
-        dest_aws_conn_id=conn.conn_id,
-        dest_s3_key=f"s3://datah/uploads/{time_ns()}/europian_countries.csv",
+        # source_s3_key="s3://datah/countries.csv",
+        # source_aws_conn_id=conn.conn_id,
+        # transform_script="/usr/local/airflow/transform_script.sh", # select_expression doesn't work with anonymous S3 access, so have to use transform_script instead. this script was injected by the Dockerfile
+        # dest_aws_conn_id=conn.conn_id,
+        # dest_s3_key=f"s3://datah/uploads/{time_ns()}/europian_countries.csv",
     )
