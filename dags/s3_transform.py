@@ -24,9 +24,9 @@ with DAG(
 ) as dag:
     S3FileTransformOperator(
         task_id="s3transform",
-        source_s3_key="s3://astro-demos-sample-data/countries.csv",
+        source_s3_key="s3://datah/countries.csv",
         source_aws_conn_id=conn.conn_id,
         transform_script="/usr/local/airflow/transform_script.sh", # select_expression doesn't work with anonymous S3 access, so have to use transform_script instead. this script was injected by the Dockerfile
         dest_aws_conn_id=conn.conn_id,
-        dest_s3_key=f"s3://astro-demos-sample-data/uploads/{time_ns()}/europian_countries.csv",
+        dest_s3_key=f"s3://datah/uploads/{time_ns()}/europian_countries.csv",
     )
