@@ -23,7 +23,7 @@ from airflow.operators.empty import EmptyOperator
 # from airflow.providers.common.sql.operators.sql import SQLColumnCheckOperator, SQLTableCheckOperator
 # from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from airflow.utils.dates import datetime
-#from airflow.utils.task_group import TaskGroup
+from airflow.utils.task_group import TaskGroup
 
 
 # SNOWFLAKE_FORESTFIRE_TABLE = "forestfires"
